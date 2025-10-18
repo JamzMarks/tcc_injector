@@ -1,0 +1,15 @@
+services:
+  injector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: injector
+    environment:
+      - PORT=${INJECTOR_PORT}
+      - RABBIT_URL=${RABBIT_URL}
+      - NEO4J_URI=${NEO4J_URI}
+      - NEO4J_USER=${NEO4J_USER}
+      - NEO4J_PASS=${NEO4J_PASS}
+    ports:
+      - "${INJECTOR_PORT}:${INJECTOR_PORT}"
+    restart: unless-stopped
