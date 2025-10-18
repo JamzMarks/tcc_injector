@@ -6,7 +6,8 @@ services:
     container_name: injector
     environment:
       - PORT=${INJECTOR_PORT}
-      - RABBIT_URL=${RABBIT_URL}
+      - AMQP_UR=${AMQP_UR}
+      - QUEUE_NAME=${QUEUE_NAME}
       - NEO4J_URI=${NEO4J_URI}
       - NEO4J_USER=${NEO4J_USER}
       - NEO4J_PASS=${NEO4J_PASS}
