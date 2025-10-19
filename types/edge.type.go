@@ -1,13 +1,11 @@
 package types
 
 type EdgeData struct {
-	DeviceID string `json:"deviceId"`
-	Location struct {
-		To   int `json:"to"`
-		From int `json:"from"`
-	} `json:"location"`
-	Data struct {
-		Confiability float32 `json:"confiability"`
-		Flow         float32 `json:"flow"`
+	DeviceId   string `json:"deviceId"`
+	DeviceType string `json:"deviceType"`
+	Data       struct {
+		Confiability float64 `json:"confiability"`
+		Flow         float64 `json:"flow"`
 	} `json:"data"`
+	TS string `json:"ts"`
 }

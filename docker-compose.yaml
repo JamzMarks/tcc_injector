@@ -6,11 +6,11 @@ services:
     container_name: injector
     environment:
       - PORT=${INJECTOR_PORT}
-      - AMQP_UR=${AMQP_UR}
+      - AMQP_URL=${AMQP_URL}
       - QUEUE_NAME=${QUEUE_NAME}
-      - NEO4J_URI=${NEO4J_URI}
-      - NEO4J_USER=${NEO4J_USER}
-      - NEO4J_PASS=${NEO4J_PASS}
+      - GRAPH_DB_URI=${GRAPH_DB_URI}
+      - GRAPH_DB_USERNAME=${GRAPH_DB_USERNAME}
+      - GRAPH_DB_PASSWORD=${GRAPH_DB_PASSWORD}
     ports:
       - "${INJECTOR_PORT}:${INJECTOR_PORT}"
     restart: unless-stopped

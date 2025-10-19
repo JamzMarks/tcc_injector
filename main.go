@@ -32,6 +32,8 @@ func main() {
 
 	// RabbitMQ
 	rabbit, err := services.NewRabbitService(amqpURL, queueName)
+	log.Printf("Escutando fila: %s no RabbitMQ: %s", queueName, amqpURL)
+
 	if err != nil {
 		log.Fatalf("Erro ao conectar RabbitMQ: %v", err)
 	}
@@ -47,6 +49,7 @@ func main() {
 
 func MessageWaiter(ch chan<- types.EdgeData, rabbit *services.RabbitService) {
 	err := rabbit.Consume(func(body []byte) error {
+
 		var e types.EdgeData
 		if err := json.Unmarshal(body, &e); err != nil {
 			return fmt.Errorf("erro ao decodificar mensagem: %w", err)
@@ -55,7 +58,7 @@ func MessageWaiter(ch chan<- types.EdgeData, rabbit *services.RabbitService) {
 		select {
 		case ch <- e:
 		default:
-			log.Printf("canal interno cheio, descartando mensagem de %s -> %d", e.DeviceID, e.Location.To)
+			log.Printf("Tipo: %s canal interno cheio, descartando mensagem de %s -> %f", e.DeviceType, e.DeviceId, e.Data.Flow)
 		}
 
 		return nil
@@ -70,6 +73,7 @@ func MessageWaiter(ch chan<- types.EdgeData, rabbit *services.RabbitService) {
 
 // Acumulador de Edges
 func EdgeListBuilder(ch <-chan types.EdgeData, timeout time.Duration, injector *services.InjectorService) {
+	log.Println("Mensagem consumida")
 	buffer := make([]types.EdgeData, 0, 50)
 	timer := time.NewTimer(timeout)
 
@@ -100,3 +104,80 @@ func EdgeListBuilder(ch <-chan types.EdgeData, timeout time.Duration, injector *
 		}
 	}
 }
+
+// package main
+
+// import (
+// 	"log"
+// 	"os"
+
+// 	"github.com/streadway/amqp"
+// )
+
+// func main() {
+// 	// Pega variáveis de ambiente
+// 	amqpURL := os.Getenv("AMQP_URL")
+// 	queueName := os.Getenv("QUEUE_NAME")
+
+// 	if amqpURL == "" || queueName == "" {
+// 		log.Fatal("Variáveis de ambiente AMQP_URL e QUEUE_NAME não configuradas")
+// 	}
+
+// 	log.Printf("Conectando ao RabbitMQ: %s", amqpURL)
+
+// 	// Conexão
+// 	conn, err := amqp.Dial(amqpURL)
+// 	if err != nil {
+// 		log.Fatalf("Erro ao conectar RabbitMQ: %v", err)
+// 	}
+// 	defer conn.Close()
+// 	log.Println("✅ Conexão estabelecida")
+
+// 	// Canal
+// 	ch, err := conn.Channel()
+// 	if err != nil {
+// 		log.Fatalf("Erro ao abrir canal: %v", err)
+// 	}
+// 	defer ch.Close()
+
+// 	// Garante que a fila existe
+// 	q, err := ch.QueueDeclare(
+// 		queueName, // nome da fila
+// 		true,      // durável
+// 		false,     // autodelete
+// 		false,     // exclusiva
+// 		false,     // no-wait
+// 		nil,       // args
+// 	)
+// 	if err != nil {
+// 		log.Fatalf("Erro ao declarar fila: %v", err)
+// 	}
+
+// 	log.Printf("🟢 Aguardando mensagens na fila: %s", q.Name)
+
+// 	// Consumidor
+// 	msgs, err := ch.Consume(
+// 		q.Name, // fila
+// 		"",     // consumer
+// 		true,   // auto-ack
+// 		false,  // exclusive
+// 		false,  // no-local
+// 		false,  // no-wait
+// 		nil,    // args
+// 	)
+// 	if err != nil {
+// 		log.Fatalf("Erro ao iniciar consumo: %v", err)
+// 	}
+
+// 	// Loop de consumo
+// 	forever := make(chan bool)
+
+// 	go func() {
+// 		for d := range msgs {
+// 			log.Printf("📩 Mensagem recebida: %s", d.Body)
+// 		}
+// 	}()
+
+// 	log.Println("🚀 Aguardando mensagens... (CTRL+C para sair)")
+// 	<-forever
+// }

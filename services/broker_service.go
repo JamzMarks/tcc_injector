@@ -60,7 +60,7 @@ func (r *RabbitService) Consume(handler func(body []byte) error) error {
 	msgs, err := r.channel.Consume(
 		r.queue,
 		"",    // consumer
-		true,  // autoAck
+		false, // autoAck
 		false, // exclusive
 		false, // noLocal
 		false, // noWait

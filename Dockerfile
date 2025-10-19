@@ -1,7 +1,7 @@
 # ===========================
 # Etapa 1: Build da aplicação
 # ===========================
-FROM golang:1.23-alpine AS builder
+FROM golang:1.25.2-alpine AS builder
 
 # Instalar dependências úteis
 RUN apk add --no-cache git
