@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"injector/services"
-	"injector/types"
 	"log"
 	"os"
 	"time"
+
+	"github.com/JamzMarks/tcc_injector.git/services"
+	"github.com/JamzMarks/tcc_injector.git/types"
 )
 
 func main() {
@@ -104,80 +105,3 @@ func EdgeListBuilder(ch <-chan types.EdgeData, timeout time.Duration, injector *
 		}
 	}
 }
-
-// package main
-
-// import (
-// 	"log"
-// 	"os"
-
-// 	"github.com/streadway/amqp"
-// )
-
-// func main() {
-// 	// Pega variáveis de ambiente
-// 	amqpURL := os.Getenv("AMQP_URL")
-// 	queueName := os.Getenv("QUEUE_NAME")
-
-// 	if amqpURL == "" || queueName == "" {
-// 		log.Fatal("Variáveis de ambiente AMQP_URL e QUEUE_NAME não configuradas")
-// 	}
-
-// 	log.Printf("Conectando ao RabbitMQ: %s", amqpURL)
-
-// 	// Conexão
-// 	conn, err := amqp.Dial(amqpURL)
-// 	if err != nil {
-// 		log.Fatalf("Erro ao conectar RabbitMQ: %v", err)
-// 	}
-// 	defer conn.Close()
-// 	log.Println("✅ Conexão estabelecida")
-
-// 	// Canal
-// 	ch, err := conn.Channel()
-// 	if err != nil {
-// 		log.Fatalf("Erro ao abrir canal: %v", err)
-// 	}
-// 	defer ch.Close()
-
-// 	// Garante que a fila existe
-// 	q, err := ch.QueueDeclare(
-// 		queueName, // nome da fila
-// 		true,      // durável
-// 		false,     // autodelete
-// 		false,     // exclusiva
-// 		false,     // no-wait
-// 		nil,       // args
-// 	)
-// 	if err != nil {
-// 		log.Fatalf("Erro ao declarar fila: %v", err)
-// 	}
-
-// 	log.Printf("🟢 Aguardando mensagens na fila: %s", q.Name)
-
-// 	// Consumidor
-// 	msgs, err := ch.Consume(
-// 		q.Name, // fila
-// 		"",     // consumer
-// 		true,   // auto-ack
-// 		false,  // exclusive
-// 		false,  // no-local
-// 		false,  // no-wait
-// 		nil,    // args
-// 	)
-// 	if err != nil {
-// 		log.Fatalf("Erro ao iniciar consumo: %v", err)
-// 	}
-
-// 	// Loop de consumo
-// 	forever := make(chan bool)
-
-// 	go func() {
-// 		for d := range msgs {
-// 			log.Printf("📩 Mensagem recebida: %s", d.Body)
-// 		}
-// 	}()
-
-// 	log.Println("🚀 Aguardando mensagens... (CTRL+C para sair)")
-// 	<-forever
-// }

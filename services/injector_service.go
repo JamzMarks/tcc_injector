@@ -3,8 +3,9 @@ package services
 import (
 	"context"
 	"fmt"
-	"injector/types"
 	"log"
+
+	"github.com/JamzMarks/tcc_injector.git/types"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
